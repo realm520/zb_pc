@@ -5,7 +5,6 @@ if (setupEvents.handleSquirrelEvent()) {
   return;
 }
 
-  
 
 // Get DNS map from local file.
 var path = require('path')
@@ -17,7 +16,6 @@ var dnsIdx = 0
 try {
   if (fs.statSync(dnsMapFile).isFile()) {
     dnsMap = JSON.parse(fs.readFileSync(dnsMapFile, "utf8"))
-    console.log(dnsMap["domain"])
   }
 } catch (e) {
   console.log(dnsMapFile + " does not exist.")
@@ -33,7 +31,7 @@ var reqHostIp=http.get(options, function(res){
     res.on("data", function(chunk){
         fs.writeFileSync(dnsMapFile, chunk)
       });
-    console.log(res.statusCode);
+    // console.log(res.statusCode);
 });
 reqHostIp.on("error",function(err){
     console.log(err.message);
@@ -49,6 +47,98 @@ const BrowserWindow = electron.BrowserWindow
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow
+let Tray = electron.Tray;
+let tray = null;
+let Menu = electron.Menu;
+let MenuItem = electron.MenuItem
+
+var template = [
+  {
+    label: '关闭',
+    click: function () { mainWindow.close();console.log("关闭")},
+  },
+  {
+    label: '刷新',
+    click: function () { mainWindow.reload();console.log("关闭")},
+  }
+]
+var menu = Menu.buildFromTemplate(template)
+Menu.setApplicationMenu(menu);
+// const menuIteam_first = new MenuItem({
+// 	label:"Electron",
+// 	submenu: [
+// 		{
+//       //需要通过cmd来启动
+// 			label:"show sth in cmd",
+// 			click(){
+// 				console.log("clickLabel")
+// 			}
+// 		},
+// 		{
+//       //创建一个新的窗口
+// 			label:"new window",
+// 			accelerator:"CmdOrCtrl+N",
+// 			role:"",
+// 			click(){
+// 				let newwindow = new BrowserWindow({
+// 					width: 400, 
+//       				height: 300,
+// 					resizable:false
+// 				})
+// 				newwindow.loadURL('file://' + __dirname + '/source/electron1.jpg');
+// 				newwindow.on("closed",function(){
+// 					newwindow = null
+// 				})
+// 			}
+// 		},
+// 		{
+//       //可以看到一个选中的选项
+// 			label: 'checked', 
+// 			type: 'checkbox', 
+// 			checked: true
+// 		},
+// 		{
+//         	//所有menuIteam的label都可以有submenu
+// 			label: 'Gender', 
+// 			submenu:[
+// 				{
+// 					label:"male",
+// 					type:"radio",
+// 					checked:true
+// 				},
+// 				{
+// 					label:"female",
+// 					type:"radio",
+// 					checked:false
+// 				},
+// 				{
+// 					label:"computer",
+// 					type:"radio",
+// 					checked:true
+// 				}
+// 			]
+// 		},
+// 		{
+//      	//只写role可以调用一些默认的设置，比如这个是全屏
+// 			role: 'togglefullscreen'
+// 		},
+// 		{
+//      	//accelerator是定义快捷键，click可以按自己需要写
+// 			label: 'Developer Tools',
+// 			accelerator: process.platform === 'darwin' ? 'CmdOrCtrl+I' : 'CmdOrCtrl+I',
+// 			click(item, focusedWindow) {
+// 			if (focusedWindow)
+// 				focusedWindow.webContents.toggleDevTools();
+// 			}
+// 		},
+// 		{	
+//      	//可以调用role默认的同时重写一些需要的内容
+// 			label:"GOODBYE",
+// 			role:"quit",
+// 			accelerator:"CmdOrCtrl+Q"
+// 		}
+// 	]
+// });
 
 function createWindow () {
   // Create the browser window.
@@ -60,9 +150,7 @@ function createWindow () {
   const options = {"extraHeaders" : "pragma: no-cache\n"}
   console.log("Domain: "+ dnsMap["domain"][dnsIdx] + ", " + dnsIdx)
   mainWindow.loadURL("https://" + dnsMap["domain"][dnsIdx] + "/", options)
-  // mainWindow.loadURL("https://192.168.1.123/", options)
   dnsIdx++
-  console.log('URL: ' + mainWindow.webContents.getURL())
 
   // Open the DevTools.
   // mainWindow.webContents.openDevTools()
@@ -76,13 +164,34 @@ function createWindow () {
   })
 
   mainWindow.webContents.on('did-fail-load', () => {
-    console.log('did-fail-load')
+    // console.log('did-fail-load')
     if (dnsIdx < dnsMap["domain"].length) {
       console.log(dnsIdx)
-      mainWindow.webContents.loadURL("https://" + dnsMap["domain"][dnsIdx++] + "/")
+        mainWindow.webContents.loadURL("https://" + dnsMap["domain"][dnsIdx++] + "/")
     }
     
   });
+
+  const nativeImage = electron.nativeImage
+  let image = nativeImage.createFromPath('img/favicon_red.ico')
+  tray = new Tray(image)
+  const contextMenu = Menu.buildFromTemplate([
+    // {
+    //   label:"show",
+    //   click(){
+    //     mainWindow.show()
+    //   }
+    // },
+    {
+      label:"Exit",
+      role:"quit"
+    }
+  ])
+  tray.setContextMenu(contextMenu)
+  
+  tray.on('click', () => {
+    mainWindow.isVisible() ? mainWindow.hide() : mainWindow.show()
+  })
 }
 
 function startMainApp() {

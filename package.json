@@ -5,12 +5,13 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "package-win": "electron-packager . ZB --asar --prune=true --out ./dist --version 1.0.1 --overwrite --platform=win32 --arch=x64 --icon=./img/favicon_red.ico",
+    "pack-x64": "electron-packager . ZB --asar --ignore=node_modules/* --prune=true --out ./dist --version 1.0.1 --overwrite --platform=win32 --arch=x64 --icon=./img/favicon_red.ico",
+    "pack-win32": "electron-packager . ZB --asar --ignore=node_modules/* --prune=true --out ./dist --version 1.0.1 --overwrite --platform=win32 --arch=ia32 --icon=./img/favicon_red.ico",
     "package-mac": "electron-packager . ZB --asar --ignore=node_modules/* --out ./dist --version 1.0.1 --overwrite --platform=darwin --arch=x64 --icon=./img/favicon_red.ico",
     "create-installer-mac": "electron-installer-dmg ./dist/ZB-darwin-x64/ZB.app/ ZB --out ./dist/dmg --overwrite icon=./img/favicon_red.ico",
     "create-installer-win": "node installers/windows/createinstaller.js"
   },
-  "repository": "http://www.zb.com/",
+  "repository": "https://github.com/realm520/zb_pc",
   "keywords": [
     "Electron",
     "ZB",
