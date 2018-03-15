@@ -1,0 +1,29 @@
+{
+  "name": "ZB",
+  "version": "1.0.0",
+  "description": "ZB PC application",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "package-win": "electron-packager . ZB --asar --prune=true --out ./dist --version 1.0.1 --overwrite --platform=win32 --arch=x64 --icon=./img/favicon_red.ico",
+    "package-mac": "electron-packager . ZB --asar --ignore=node_modules/* --out ./dist --version 1.0.1 --overwrite --platform=darwin --arch=x64 --icon=./img/favicon_red.ico",
+    "create-installer-mac": "electron-installer-dmg ./dist/ZB-darwin-x64/ZB.app/ ZB --out ./dist/dmg --overwrite icon=./img/favicon_red.ico",
+    "create-installer-win": "node installers/windows/createinstaller.js"
+  },
+  "repository": "http://www.zb.com/",
+  "keywords": [
+    "Electron",
+    "ZB",
+    "exchange",
+    "crypto-currency",
+    "security"
+  ],
+  "author": "Harry Zhang",
+  "license": "ZBL-1.0",
+  "devDependencies": {
+    "electron": "~1.7.8",
+    "electron-installer-dmg": "^0.2.1",
+    "electron-packager": "^10.1.1",
+    "electron-winstaller": "^2.6.4"
+  }
+}
