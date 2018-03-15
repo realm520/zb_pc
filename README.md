@@ -6,8 +6,6 @@ ZB交易所PC端应用，基于 electron [Quick Start Guide](http://electron.ato
 
 **查看 [Electron API Demos](http://electron.atom.io/#get-started) 获取更多帮助.**
 
-You can learn more about each of these components within the [Quick Start Guide](http://electron.atom.io/docs/tutorial/quick-start).
-
 ## 使用
 
 你需要在你的电脑上安装 [Git](https://git-scm.com) 和 [Node.js](https://nodejs.org/en/download/) (带 [npm](http://npmjs.com)) 来运行应用. 在命令行输入:
